@@ -63,7 +63,7 @@ function getConfig () {
   return config
 }
 
-function getTerminalOutputGroupNames (config = getConfig()) {
+function getTerminalOutputGroupNames (config) {
   const configNames = getGroupNames(config.parameters)
   let outputGroupNames = process.argv.filter(name => configNames.includes(name))
   outputGroupNames = outputGroupNames.length
@@ -72,7 +72,7 @@ function getTerminalOutputGroupNames (config = getConfig()) {
   return outputGroupNames
 }
 
-async function getFfmpegParameters (inputDir, inputFile, outputDir, config = getConfig(), outputGroupNames = getTerminalOutputGroupNames(config)) {
+async function getFfmpegParameters (inputDir, inputFile, outputDir, config, outputGroupNames) {
   const inputFileParsed = path.parse(inputFile)
   // Make sure inputFile is absolute in parameters
   inputFile = path.resolve(inputDir, inputFile)

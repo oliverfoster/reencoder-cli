@@ -108,6 +108,10 @@ function getConcurrency (config) {
 
 const encoding = {
 
+  getTerminalOutputGroupNames (config = getConfig()) {
+    return getTerminalOutputGroupNames(config)
+  },
+
   getConfig () {
     return getConfig()
   },
@@ -124,7 +128,7 @@ const encoding = {
 
   async reencode ({
     config = getConfig(),
-    outputGroupNames = getTerminalOutputGroupNames(),
+    outputGroupNames = config.default,
     inputDir = path.resolve(process.cwd(), config.inputDir ?? './'),
     outputDir = path.resolve(process.cwd(), config.outputDir ?? './reencoder'),
     status = (state) => console.log(

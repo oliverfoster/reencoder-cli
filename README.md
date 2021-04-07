@@ -88,3 +88,21 @@ With specified outputs:
 ```sh
 $ reencoder 1080 720 480
 ```
+
+As a library:
+```js
+const { reencode, getConfig } = require('reencoder-cli')
+const config = getConfig(); // Lookup .reencoderrc.json
+await reencode({
+    config, // Config can be specified here, or it will be fetched from .reencoderrc.json through parent directories
+    outputGroupNames, // Uses config.default as default to specify which named subtasks should run
+    inputDir, // Uses './' as default if unspecified in config
+    outputDir, // Uses './reencoder' as default if unspecified in config
+    status = (state) => console.log( // Outputs to console: 6.25% 1/3 18.75% nested/one.mp4
+      state.totalPercentComplete,
+      `${state.currentItem}/${state.total}`,
+      state.currentPercentComplete,
+      state.currentInputFile
+    )
+  })
+```
