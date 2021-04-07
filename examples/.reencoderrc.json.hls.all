@@ -4,6 +4,7 @@
   "outputDir": "./build",
   "clearOutputDir": true,
   "concurrency": 1,
+  "default": "",
   "parameters": [
     "-y",
     "-hwaccel", "auto",
