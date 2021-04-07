@@ -81,10 +81,10 @@ Add `.reencoderrc.json` to the execution directory or any of its parents.
 
 With default output:
 ```sh
-$ reencode
+$ reencoder
 ```
 
 With specified outputs:
 ```sh
-$ reencode 1080 720 480
+$ reencoder 1080 720 480
 ```
