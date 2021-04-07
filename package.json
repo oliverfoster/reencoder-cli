@@ -1,0 +1,38 @@
+{
+  "name": "reencoder-cli",
+  "version": "0.0.1",
+  "main": "./app/encoding.js",
+  "bin": {
+    "reencoder": "./bin/reencoder"
+  },
+  "dependencies": {
+    "applause": "^2.0.1",
+    "async": "^3.2.0",
+    "ffmpeg-static": "^4.3.0",
+    "ffprobe-static": "^3.0.0",
+    "find-up": "^5.0.0",
+    "fs-extra": "^9.1.0",
+    "globs": "^0.1.4",
+    "lodash": "^4.17.21",
+    "sanitize-filename": "^1.6.3"
+  },
+  "devDependencies": {
+    "eslint": "^6.0.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-requirejs": "^4.0.0",
+    "eslint-plugin-standard": "^4.0.0"
+  },
+  "scripts": {
+    "start": "node app/index.js"
+  },
+  "license": "GPLv3",
+  "maintainers": [
+    {
+      "name": "oliver.foster",
+      "email": "oliver.foster@kineo.com"
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "description": "Converts src files into 3 different qualities for interactive videos",
+  "inputDir": "./src",
+  "outputDir": "./build",
+  "clearOutputDir": true,
+  "parameters": [
+    "-y",
+    "-hwaccel", "auto",
+    "-i", "@@inputDir/**/*@(.mp4|.mov|.avi|.wmv)",
+    {
+      "high": [
+        "-vf", "scale=trunc(oh*a/2)*2:1080",
+        "-b:a", "90k",
+        "-crf", 18,
+        "-maxrate", "1.6M",
+        "-r", 24,
+        "-profile:v", "high",
+        "-tune", "film",
+        "-level", "4.1",
+        "-movflags", "+faststart",
+        "-bufsize", "2M",
+        "-ac", 1,
+        "-ar", 44100,
+        "@@outputDir/@@inputFileDir/@@inputFileNameSanitizedLowerCase.mp4"
+      ],
+      "medium": [
+        "-vf", "scale=trunc(oh*a/2)*2:720",
+        "-b:a", "90k",
+        "-crf", 18,
+        "-maxrate", "0.8M",
+        "-r", 24,
+        "-profile:v", "high",
+        "-tune", "film",
+        "-level", "4.1",
+        "-movflags", "+faststart",
+        "-bufsize", "2M",
+        "-ac", 1,
+        "-ar", 44100,
+        "@@outputDir/@@inputFileDir/@@inputFileNameSanitizedLowerCase.@@outputGroupName.mp4"
+      ],
+      "low": [
+        "-vf", "scale=trunc(oh*a/2)*2:480",
+        "-b:a", "90k",
+        "-crf", 18,
+        "-maxrate", "0.8M",
+        "-r", 24,
+        "-profile:v", "high",
+        "-tune", "film",
+        "-level", "4.1",
+        "-movflags", "+faststart",
+        "-bufsize", "2M",
+        "-ac", 1,
+        "-ar", 44100,
+        "@@outputDir/@@inputFileDir/@@inputFileNameSanitizedLowerCase.@@outputGroupName.mp4"
+      ]
+    }
+  ]
+}
