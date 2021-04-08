@@ -15,7 +15,7 @@ Both a *library* and *cli*.
 ### Configuration
 
 Add `.reencoderrc.json` to the execution directory or any of its parents. 
-
+See examples in the ['examples/'](https://github.com/oliverfoster/reencoder-cli/tree/master/examples) directory.
 ```json
 {
   "description": "The example is for repeatedly converting and collated videos in nested subdirectories to a uniform format, 1080p, 720p or 480p.",
