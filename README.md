@@ -62,15 +62,15 @@ See examples in the ['examples/'](https://github.com/oliverfoster/reencoder-cli/
 ##### String replacement
 Available string replacement variables are declared [here](https://github.com/oliverfoster/reencoder-cli/blob/c710b8b4c97586bec612ca480561679294c7ab2b/app/parameters.js#L93-L103):
 
-**@@inputFile** (string): Absolute input file path<br>
-**@@inputFileBase** (string): Full file name<br>
-**@@inputFileDir** (string): Relative sub directory of the absolute file path<br>
-**@@inputFileExt** (string): File extension<br>
-**@@inputFileName** (string): Front part of the file name<br>
-**@@inputFileNameSanitized** (string):Front part of the file name, with special characters and spaces removed<br>
-**@@inputFileNameSanitizedLowerCase** (string): Front part of the file name, with special characters and spaces removed, lowercase<br>
-**@@outputDir** (string): Absolute output file path<br>
-**@@outputGroupName** (string): Nested configuration name<br>
+_@@inputFile_: Absolute input file path<br>
+_@@inputFileBase_: Full file name<br>
+_@@inputFileDir_: Relative sub directory of the absolute file path<br>
+_@@inputFileExt_: File extension<br>
+_@@inputFileName_: Front part of the file name<br>
+_@@inputFileNameSanitized_: Front part of the file name, with special characters and spaces removed<br>
+_@@inputFileNameSanitizedLowerCase_: Front part of the file name, with special characters and spaces removed, lowercase<br>
+_@@outputDir_: Absolute output file path<br>
+_@@outputGroupName_: Nested configuration name<br>
 
 ### Execution
 
