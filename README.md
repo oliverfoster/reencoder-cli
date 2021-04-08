@@ -72,9 +72,10 @@ Available string replacement variables are declared [here](https://github.com/ol
 **_@@outputDir_** Absolute output file path<br>
 **_@@outputGroupName_** Nested configuration name<br>
 
-#### Considerations
+#### Parameters
 
-[ffmpeg](http://ffmpeg.org/ffmpeg.html#Main-options) main options:<br>
+[ffmpeg main options](http://ffmpeg.org/ffmpeg.html#Main-options):<br>
+
 **_-i_** The standard input parameter for ffmpeg is a [glob](https://github.com/isaacs/node-glob)<br>
 **_-y_** The absence of `-y` assumes `-n`, which instead of overwriting is to skip without prompt
 
