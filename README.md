@@ -59,7 +59,7 @@ See examples in the ['examples/'](https://github.com/oliverfoster/reencoder-cli/
 }
 ```
 
-##### String replacement
+#### String replacement
 Available string replacement variables are declared [here](https://github.com/oliverfoster/reencoder-cli/blob/c710b8b4c97586bec612ca480561679294c7ab2b/app/parameters.js#L93-L103):
 
 **_@@inputFile_** Absolute input file path<br>
