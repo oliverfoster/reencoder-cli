@@ -39,6 +39,7 @@ function reduceParameters (parameters, outputGroupNames, context) {
           .entries(option)
           .filter(([name]) => !outputGroupNames || !outputGroupNames.length || outputGroupNames.includes(name))
           .map(([name, value]) => {
+            // NOTE: This should process nested group names better, only first group comes out currently
             context.outputGroupName = name
             return stringReplace(context, value)
           })
@@ -58,10 +59,12 @@ function reduceParameters (parameters, outputGroupNames, context) {
   return parameters
 }
 
-function getGroupNames (options) {
-  const names = options.reduce((names, value) => {
+function getGroupNames (parameters) {
+  const names = parameters.reduce((names, value) => {
     if (typeof value !== 'object') return names
-    names.push(...Object.keys(value))
+    const keys = Object.keys(value)
+    names.push(...keys)
+    keys.forEach(key => names.push(...getGroupNames(value[key])))
     return names
   }, [])
   return names
@@ -77,7 +80,7 @@ function getTerminalOutputGroupNames (config) {
   let outputGroupNames = process.argv.filter(name => configNames.includes(name))
   outputGroupNames = outputGroupNames.length
     ? outputGroupNames
-    : config.default.split(/ ,/gi) ?? ''
+    : (config.default ?? '').split(/ |,/g)
   return outputGroupNames
 }
 
