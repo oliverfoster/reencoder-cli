@@ -18,7 +18,7 @@ Add `.reencoderrc.json` to the execution directory or any of its parents.
 See examples in the ['examples/'](https://github.com/oliverfoster/reencoder-cli/tree/master/examples) directory.
 ```json
 {
-  "description": "The example is for repeatedly converting and collated videos in nested subdirectories to a uniform format, 1080p, 720p or 480p.",
+  "description": "The example is for repeatedly converting and collating videos in nested subdirectories to a uniform format, 1080p, 720p or 480p.",
   "description": "It will skip files which exist in the output dir already and it will not clear the output folder.",
   "inputDir": "./",
   "outputDir": "./Converted",
