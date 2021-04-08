@@ -74,10 +74,12 @@ Available string replacement variables are declared [here](https://github.com/ol
 
 #### Parameters
 
-#### [ffmpeg main options](http://ffmpeg.org/ffmpeg.html#Main-options)
+#### Custom behaviour
 
 **_-i_** The standard input parameter for ffmpeg is a [glob](https://github.com/isaacs/node-glob)<br>
 **_-y_** The absence of `-y` assumes `-n`, which instead of overwriting is to skip without prompt
+
+reference: [main options](http://ffmpeg.org/ffmpeg.html#Main-options)
 
 #### Object parameters
 
