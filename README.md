@@ -83,7 +83,11 @@ Reference: [main options](http://ffmpeg.org/ffmpeg.html#Main-options)
 
 ##### Object parameters
 
-Parameters included as named values of objects will be included in the ffmpeg execution parameters only when their name matches, (when a *library*) an entry in the `outputGroupNames` variable, or (when a *cli*) as arguments in the terminal.
+Parameters included as named values of objects will be included in the ffmpeg execution parameters only when their name matches, (when a *library*) an entry in the `outputGroupNames` variable, or (when a *cli*) arguments in the terminal.<br>
+
+This allows for some simple configuration variations.<br>
+
+Objects can be nested.<br>
 
 ### Execution
 
