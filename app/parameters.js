@@ -99,7 +99,8 @@ async function getFfmpegParameters (inputDir, inputFile, outputDir, config, outp
     inputFileNameSanitized: sanitized,
     inputFileNameSanitizedLowerCase: sanitized.toLowerCase(),
     inputFileRoot: inputFileParsed.root,
-    outputDir
+    outputDir,
+    outputGroupName: ''
   })
   // Replace input glob with absolute filename
   const inputFileIndex = parameters.findIndex(param => param === '-i')
