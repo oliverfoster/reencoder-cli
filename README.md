@@ -1,7 +1,6 @@
 # reencoder-cli
 
-Batch video reencode with ffmpeg and ffprobe.
-Both a *library* and *cli*.
+Batch video reencode with ffmpeg and ffprobe. Project local configurations. Configurations variations. Glob support.
 
 ## Installation
 ### Globally as a *cli*
