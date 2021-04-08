@@ -4,7 +4,7 @@
   "outputDir": "./build",
   "clearOutputDir": true,
   "concurrency": 1,
-  "default": "high medium low",
+  "default": "high",
   "parameters": [
     "-y",
     "-hwaccel", "auto",
