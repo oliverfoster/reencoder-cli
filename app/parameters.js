@@ -71,7 +71,12 @@ function getGroupNames (parameters) {
 }
 
 function getConfig () {
-  const config = fs.readJsonSync(findUp.sync('.reencoderrc.json'))
+  const filePath = findUp.sync('.reencoderrc.json')
+  if (!filePath) {
+    throw new Error('No ".reencoderrc.json" file found. Please check your configuration.');
+  }
+  console.log(`Using ${filePath}`);
+  const config = fs.readJsonSync(filePath);
   return config
 }
 
@@ -88,6 +93,9 @@ async function getFfmpegParameters (inputDir, inputFile, outputDir, config, outp
   const inputFileParsed = path.parse(inputFile)
   // Make sure inputFile is absolute in parameters
   inputFile = path.resolve(inputDir, inputFile)
+  outputGroupNames = typeof outputGroupNames === 'string'
+    ? outputGroupNames.split(/ |,/g)
+    : outputGroupNames
   const sanitized = sanitize(inputFileParsed.name).replace(sanitizeREGEX, '')
   const parameters = reduceParameters(config.parameters, outputGroupNames, {
     inputFile,

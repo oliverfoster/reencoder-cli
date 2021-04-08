@@ -74,7 +74,7 @@ function unixPath (dir) {
 async function getInputFilePaths (config, inputDir, outputDir) {
   const inputDirStat = await fs.stat(inputDir)
   const outputDirStat = await fs.stat(outputDir)
-  const isInDirectory = inputDirStat.isDirectory
+  const isInDirectory = inputDirStat.isDirectory()
   if (isInDirectory) {
     // Use configured ffmpeg -i parameter value as a glob, return files
     const glob = unixPath(stringReplace({ inputDir, outputDir }, getInputFilePath(config.parameters)))
@@ -101,10 +101,15 @@ async function getInputFilePaths (config, inputDir, outputDir) {
         if (file.startsWith(inputDir)) return file.slice(inputDir.length + 1)
         return file
       })
-    return inputFiles
+    return [inputDir, inputFiles]
   }
   // Return inputDir as already pointing to a file
-  return [inputDir]
+  const inputDirParsed = path.parse(inputDir);
+  inputDir = inputDirParsed.dir;
+  const inputFiles = [
+    inputDirParsed.base
+  ];
+  return [inputDir, inputFiles]
 }
 
 async function getInputFileDurations (config, inputDir, inputFiles, status = state => {}) {
@@ -175,49 +180,55 @@ const encoding = {
   } = {}) {
     let proc
     const promise = new Promise(async (resolve, reject) => {
-      const inputDir = unixPath(path.resolve(process.cwd(), config.inputDir ?? './'))
-      const outputDir = unixPath(path.resolve(process.cwd(), config.outputDir ?? './Converted'))
-      const outputGroupNames = config.default ?? ''
-      config.clearOutputDir && await fs.remove(outputDir)
-      await fs.ensureDir(outputDir)
-      let inputFiles = await getInputFilePaths(config, inputDir, outputDir)
-      let durationSeconds
-      [ inputFiles, durationSeconds ] = await getInputFileDurations(config, inputDir, inputFiles, status)
-      const elapsedSeconds = new Array(inputFiles.length)
-      const totalSeconds = _.sum(durationSeconds)
-      const total = String(inputFiles.length)
-      await async.eachOfLimit(inputFiles, getConcurrency(config), async (currentInputFile, currentIndex) => {
-        const ffmpegParameters = await getFfmpegParameters(inputDir, currentInputFile, outputDir, config, outputGroupNames)
-        await ensureOutputFilePaths(ffmpegParameters)
-        const currentDuration = durationSeconds[currentIndex]
-        const currentItem = String(currentIndex + 1)
-        try {
-          proc = encoding.ffmpeg(ffmpegParameters, processFfmpegOutputToSeconds.bind(null, seconds => {
-            // Calculate the percentage position in the total seconds of video to process
-            elapsedSeconds[currentIndex] = seconds
-            const currentTotalSeconds = _.sum(elapsedSeconds)
-            const currentPercentComplete = (seconds / currentDuration * 100).toFixed(2) + '%'
-            const totalPercentComplete = (currentTotalSeconds / totalSeconds * 100).toFixed(2) + '%'
-            status({
-              mode: 'reencode',
-              inputFiles,
-              totalPercentComplete,
-              total,
-              currentInputFile,
-              currentItem,
-              currentPercentComplete
-            })
-          }))
-          await proc
-          proc = null
-        } catch (err) {
-          if (/already exists\. Exiting\./gi.test(err.message)) {
-            elapsedSeconds[currentIndex] = durationSeconds[currentIndex]
-            return
+      try {
+        let inputDir = unixPath(path.resolve(process.cwd(), config.inputDir ?? './'))
+        const outputDir = unixPath(path.resolve(process.cwd(), config.outputDir ?? './Converted'))
+        const outputGroupNames = config.default ?? ''
+        config.clearOutputDir && await fs.remove(outputDir)
+        await fs.ensureDir(outputDir)
+        let inputFiles;
+        [ inputDir, inputFiles ] = await getInputFilePaths(config, inputDir, outputDir)
+        let durationSeconds
+        [ inputFiles, durationSeconds ] = await getInputFileDurations(config, inputDir, inputFiles, status)
+        const elapsedSeconds = new Array(inputFiles.length)
+        const totalSeconds = _.sum(durationSeconds)
+        const total = String(inputFiles.length)
+        await async.eachOfLimit(inputFiles, getConcurrency(config), async (currentInputFile, currentIndex) => {
+          const ffmpegParameters = await getFfmpegParameters(inputDir, currentInputFile, outputDir, config, outputGroupNames)
+          await ensureOutputFilePaths(ffmpegParameters)
+          const currentDuration = durationSeconds[currentIndex]
+          const currentItem = String(currentIndex + 1)
+          try {
+            proc = encoding.ffmpeg(ffmpegParameters, processFfmpegOutputToSeconds.bind(null, seconds => {
+              // Calculate the percentage position in the total seconds of video to process
+              elapsedSeconds[currentIndex] = seconds
+              const currentTotalSeconds = _.sum(elapsedSeconds)
+              const currentPercentComplete = (seconds / currentDuration * 100).toFixed(2) + '%'
+              const totalPercentComplete = (currentTotalSeconds / totalSeconds * 100).toFixed(2) + '%'
+              status({
+                mode: 'reencode',
+                inputFiles,
+                totalPercentComplete,
+                total,
+                currentInputFile,
+                currentItem,
+                currentPercentComplete
+              })
+            }))
+            await proc
+            proc = null
+          } catch (err) {
+            if (/already exists\. Exiting\./gi.test(err.message)) {
+              elapsedSeconds[currentIndex] = durationSeconds[currentIndex]
+              return
+            }
+            throw err
           }
-          throw err
-        }
-      })
+        })
+        resolve()
+      } catch (err) {
+        reject(err)
+      }
     })
     promise.kill = function () {
       proc && proc.kill()
