@@ -29,24 +29,33 @@ function stringReplace (context, parameters) {
 
 function reduceParameters (parameters, outputGroupNames, context) {
   context = Object.assign({}, context)
-  parameters = parameters.reduce((parameters, option) => {
-    if (typeof option === 'object') {
-      const namedParameters = Object
-        .entries(option)
-        .filter(([name]) => !outputGroupNames || !outputGroupNames.length || outputGroupNames.includes(name))
-        .map(([name, value]) => {
-          context.outputGroupName = name
-          return stringReplace(context, value)
-        })
-      parameters.push(...namedParameters)
+  let hasResolvedObjects = true
+  function perform (parameters) {
+    hasResolvedObjects = false
+    parameters = parameters.reduce((parameters, option) => {
+      if (typeof option === 'object') {
+        hasResolvedObjects = true
+        const namedParameters = Object
+          .entries(option)
+          .filter(([name]) => !outputGroupNames || !outputGroupNames.length || outputGroupNames.includes(name))
+          .map(([name, value]) => {
+            context.outputGroupName = name
+            return stringReplace(context, value)
+          })
+        parameters.push(...namedParameters)
+        return parameters
+      }
+      context.outputGroupName = ''
+      option = stringReplace(context, option)
+      parameters.push(option)
       return parameters
-    }
-    context.outputGroupName = ''
-    option = stringReplace(context, option)
-    parameters.push(option)
-    return parameters
-  }, [])
-  return _.flatten(parameters)
+    }, [])
+    return _.flatten(parameters)
+  }
+  while (hasResolvedObjects) {
+    parameters = perform(parameters)
+  }
+  return parameters
 }
 
 function getGroupNames (options) {
