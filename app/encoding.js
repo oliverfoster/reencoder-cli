@@ -68,36 +68,70 @@ function unixPath (dir) {
 
 async function getInputFilePaths (config, inputDir, outputDir) {
   const inputDirStat = await fs.stat(inputDir)
+  const outputDirStat = await fs.stat(outputDir)
   const isInDirectory = inputDirStat.isDirectory
   if (isInDirectory) {
     // Use configured ffmpeg -i parameter value as a glob, return files
     const glob = unixPath(stringReplace({ inputDir, outputDir }, getInputFilePath(config.parameters)))
-    return (await util.promisify(globs)(
+    const inputFiles = (await util.promisify(globs)(
       glob,
       // Assume glob starts from inputDir
       { cwd: inputDir, absolute: true }
     ))
       // Exclude files in the outputDir
-      .filter(file => !file.startsWith(outputDir))
+      .filter(file => {
+        // Check if lowercase paths match
+        const looseCompare = file.toLowerCase().startsWith(outputDir.toLowerCase())
+        if (!looseCompare) return true
+        try {
+          // Check if refering to the same inode
+          const fileDirStat = fs.statSync(file.slice(0, outputDir.length))
+          return (fileDirStat.ino !== outputDirStat.ino)
+        } catch (err) {
+          return true
+        }
+      })
       .map(file => {
         // Return relative paths to inputDir
         if (file.startsWith(inputDir)) return file.slice(inputDir.length + 1)
         return file
       })
+    return inputFiles
   }
   // Return inputDir as already pointing to a file
   return [inputDir]
 }
 
-async function getInputFileDurations (config, inputDir, inputFiles) {
-  return async.mapLimit(inputFiles, getConcurrency(config), async (inputFile) => {
-    const probeParameters = ['-of', 'json', '-show_format', path.resolve(inputDir, inputFile)]
-    const [ stdout ] = await encoding.ffprobe(probeParameters)
-    const probe = JSON.parse(stdout)
-    // Ignore sub seconds
-    const duration = parseInt(probe.format.duration)
-    return duration
+async function getInputFileDurations (config, inputDir, inputFiles, status = state => {}) {
+  const total = inputFiles.length
+  let currentIndex = -1
+  const durations = await async.mapLimit(inputFiles, getConcurrency(config), async (currentInputFile) => {
+    currentIndex++
+    const probeParameters = ['-of', 'json', '-show_format', path.resolve(inputDir, currentInputFile)]
+    try {
+      const [ stdout ] = await encoding.ffprobe(probeParameters)
+      const probe = JSON.parse(stdout)
+      // Ignore sub seconds
+      const duration = parseInt(probe.format.duration)
+      status({
+        mode: 'calculate',
+        inputFiles,
+        totalPercentComplete: '0.00%',
+        total,
+        currentInputFile,
+        currentItem: (currentIndex + 1),
+        currentPercentComplete: '0.00%'
+      })
+      return duration
+    } catch (err) {
+      console.log(`Corrupt: ${currentInputFile}`)
+    }
   })
+  // Remove files where the duration cannot be calculated
+  return [
+    inputFiles.filter((value, index) => (durations[index] ?? null) !== null),
+    durations.filter(value => (value ?? null) !== null)
+  ]
 }
 
 function getConcurrency (config) {
@@ -132,6 +166,7 @@ const encoding = {
     inputDir = path.resolve(process.cwd(), config.inputDir ?? './'),
     outputDir = path.resolve(process.cwd(), config.outputDir ?? './reencoder'),
     status = (state) => console.log(
+      state.mode,
       state.totalPercentComplete,
       `${state.currentItem}/${state.total}`,
       state.currentPercentComplete,
@@ -142,8 +177,9 @@ const encoding = {
     outputDir = unixPath(outputDir)
     config.clearOutputDir && await fs.remove(outputDir)
     await fs.ensureDir(outputDir)
-    const inputFiles = await getInputFilePaths(config, inputDir, outputDir)
-    const durationSeconds = await getInputFileDurations(config, inputDir, inputFiles)
+    let inputFiles = await getInputFilePaths(config, inputDir, outputDir)
+    let durationSeconds
+    [ inputFiles, durationSeconds ] = await getInputFileDurations(config, inputDir, inputFiles, status)
     const elapsedSeconds = new Array(inputFiles.length)
     const totalSeconds = _.sum(durationSeconds)
     const total = String(inputFiles.length)
@@ -152,21 +188,30 @@ const encoding = {
       await ensureOutputFilePaths(ffmpegParameters)
       const currentDuration = durationSeconds[currentIndex]
       const currentItem = String(currentIndex + 1)
-      await encoding.ffmpeg(ffmpegParameters, processFfmpegOutputToSeconds.bind(null, seconds => {
-        // Calculate the percentage position in the total seconds of video to process
-        elapsedSeconds[currentIndex] = seconds
-        const currentTotalSeconds = _.sum(elapsedSeconds)
-        const currentPercentComplete = (seconds / currentDuration * 100).toFixed(2) + '%'
-        const totalPercentComplete = (currentTotalSeconds / totalSeconds * 100).toFixed(2) + '%'
-        status({
-          inputFiles,
-          totalPercentComplete,
-          total,
-          currentInputFile,
-          currentItem,
-          currentPercentComplete
-        })
-      }))
+      try {
+        await encoding.ffmpeg(ffmpegParameters, processFfmpegOutputToSeconds.bind(null, seconds => {
+          // Calculate the percentage position in the total seconds of video to process
+          elapsedSeconds[currentIndex] = seconds
+          const currentTotalSeconds = _.sum(elapsedSeconds)
+          const currentPercentComplete = (seconds / currentDuration * 100).toFixed(2) + '%'
+          const totalPercentComplete = (currentTotalSeconds / totalSeconds * 100).toFixed(2) + '%'
+          status({
+            mode: 'reencode',
+            inputFiles,
+            totalPercentComplete,
+            total,
+            currentInputFile,
+            currentItem,
+            currentPercentComplete
+          })
+        }))
+      } catch (err) {
+        if (/already exists\. Exiting\./gi.test(err.message)) {
+          elapsedSeconds[currentIndex] = durationSeconds[currentIndex]
+          return
+        }
+        throw err
+      }
     })
   },
 

@@ -68,7 +68,7 @@ function getTerminalOutputGroupNames (config) {
   let outputGroupNames = process.argv.filter(name => configNames.includes(name))
   outputGroupNames = outputGroupNames.length
     ? outputGroupNames
-    : config.default ?? ''
+    : config.default.split(/ ,/gi) ?? ''
   return outputGroupNames
 }
 
@@ -92,6 +92,11 @@ async function getFfmpegParameters (inputDir, inputFile, outputDir, config, outp
   // Replace input glob with absolute filename
   const inputFileIndex = parameters.findIndex(param => param === '-i')
   parameters[inputFileIndex + 1] = inputFile
+  // Make sure to silently not overwrite
+  const overwriteIndex = parameters.findIndex(param => param === '-y')
+  if (overwriteIndex === -1) {
+    parameters.unshift('-n')
+  }
   return parameters
 }
 
