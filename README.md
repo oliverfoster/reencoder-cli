@@ -74,10 +74,14 @@ Available string replacement variables are declared [here](https://github.com/ol
 
 #### Parameters
 
-[ffmpeg main options](http://ffmpeg.org/ffmpeg.html#Main-options):<br>
+#### [ffmpeg main options](http://ffmpeg.org/ffmpeg.html#Main-options)
 
 **_-i_** The standard input parameter for ffmpeg is a [glob](https://github.com/isaacs/node-glob)<br>
 **_-y_** The absence of `-y` assumes `-n`, which instead of overwriting is to skip without prompt
+
+#### Object parameters
+
+Parameters included as named values of nested objects will be included in the execution parameters only when their name match those included in the `outputGroupNames` variable or when a cli, as arguments in the terminal.
 
 ### Execution
 
