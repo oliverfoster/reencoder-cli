@@ -3,16 +3,16 @@
 Batch video reencode with ffmpeg and ffprobe.
 Both a *library* and *cli*.
 
-### Installation
-##### Globally as a *cli*
+## Installation
+### Globally as a *cli*
 
 `npm install -g reencoder-cli`
 
-##### Locally as a *library*
+### Locally as a *library*
 
 `npm install -s reencoder-cli`
 
-### Configuration
+## Configuration
 
 Add `.reencoderrc.json` to the execution directory or any of its parents. 
 See examples in the ['examples/'](https://github.com/oliverfoster/reencoder-cli/tree/master/examples) directory.
@@ -59,29 +59,23 @@ See examples in the ['examples/'](https://github.com/oliverfoster/reencoder-cli/
 }
 ```
 
-#### String replacement
-Available string replacement variables are declared [here](https://github.com/oliverfoster/reencoder-cli/blob/c710b8b4c97586bec612ca480561679294c7ab2b/app/parameters.js#L93-L103):
+### Options
+**_default_** : Defaults to `''`. Specifies which named groups should run. If unspecified will run all groups.<br>
+**_inputDir_** : Defaults to `'./'`.<br>
+**_outputDir_** : Defaults to `'./Converted'`.<br>
+**_concurrency_** : Defaults to `1`. Specifies the number of encodes to run in parallel.<br>
+**_clearOutputDir_** : Defaults to `false`.<br>
 
-**_@@inputFile_** Absolute input file path<br>
-**_@@inputFileBase_** Full file name<br>
-**_@@inputFileDir_** Relative sub directory of the absolute file path<br>
-**_@@inputFileExt_** File extension<br>
-**_@@inputFileName_** Front part of the file name<br>
-**_@@inputFileNameSanitized_** Front part of the file name, with special characters and spaces removed<br>
-**_@@inputFileNameSanitizedLowerCase_** Front part of the file name, with special characters and spaces removed, lowercase<br>
-**_@@outputDir_** Absolute output file path<br>
-**_@@outputGroupName_** Nested configuration name<br>
+### Parameters
 
-#### Parameters
+#### Irregular
 
-##### Custom behaviour
-
-**_-i_** The standard input parameter for ffmpeg is a [glob](https://github.com/isaacs/node-glob)<br>
-**_-y_** The absence of `-y` assumes `-n`, which instead of overwriting is to skip without prompt
+**_-i_** : The standard input parameter for ffmpeg is a [glob](https://github.com/isaacs/node-glob).<br>
+**_-y_** : The absence of `-y` assumes `-n`, which instead of overwriting is to skip without prompt.
 
 Reference: [main options](http://ffmpeg.org/ffmpeg.html#Main-options)
 
-##### Object parameters
+#### Objects
 
 Parameters included as named values of objects will be included in the ffmpeg execution parameters only when their name matches, (when a *library*) an entry in the `outputGroupNames` variable, or (when a *cli*) arguments in the terminal.<br>
 
@@ -89,13 +83,21 @@ This allows for some simple configuration variations.<br>
 
 Objects can be nested.<br>
 
-##### Options
-**_outputGroupNames_** Uses config.default as default to specify which named subtasks should run or run all subtasks<br>
-**_inputDir_** Uses './' as default if unspecified in config<br>
-**_outputDir_** Uses './Converted' as default if unspecified in config<br>
+#### String replacement
+Available string replacement variables are declared [here](https://github.com/oliverfoster/reencoder-cli/blob/c710b8b4c97586bec612ca480561679294c7ab2b/app/parameters.js#L93-L103):
+
+**_@@inputFile_** : Absolute input file path.<br>
+**_@@inputFileBase_** : Full file name, including extension.<br>
+**_@@inputFileDir_** : Sub directory relative to `inputDir`.<br>
+**_@@inputFileExt_** : File extension.<br>
+**_@@inputFileName_** : Front part of the file name.<br>
+**_@@inputFileNameSanitized_** : Front part of the file name, with special characters and spaces removed.<br>
+**_@@inputFileNameSanitizedLowerCase_** : Front part of the file name, with special characters and spaces removed, lowercase.<br>
+**_@@outputDir_** : Absolute output file path.<br>
+**_@@outputGroupName_** : Nested configuration name.<br>
 
 
-### Execution
+## Execution
 
 With default output:
 ```sh
