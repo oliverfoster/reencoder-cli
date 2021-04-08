@@ -162,9 +162,6 @@ const encoding = {
 
   async reencode ({
     config = getConfig(),
-    outputGroupNames = config.default,
-    inputDir = path.resolve(process.cwd(), config.inputDir ?? './'),
-    outputDir = path.resolve(process.cwd(), config.outputDir ?? './reencoder'),
     status = (state) => console.log(
       state.mode,
       state.totalPercentComplete,
@@ -173,8 +170,9 @@ const encoding = {
       state.currentInputFile
     )
   } = {}) {
-    inputDir = unixPath(inputDir)
-    outputDir = unixPath(outputDir)
+    const inputDir = unixPath(path.resolve(process.cwd(), config.inputDir ?? './'))
+    const outputDir = unixPath(path.resolve(process.cwd(), config.outputDir ?? './Converted'))
+    const outputGroupNames = config.default ?? ''
     config.clearOutputDir && await fs.remove(outputDir)
     await fs.ensureDir(outputDir)
     let inputFiles = await getInputFilePaths(config, inputDir, outputDir)

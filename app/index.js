@@ -1,6 +1,4 @@
 const { getConfig, reencode, getTerminalOutputGroupNames } = require('./encoding')
 const config = getConfig()
-reencode({
-  config,
-  outputGroupNames: getTerminalOutputGroupNames(config)
-})
+config.outputGroupNames = getTerminalOutputGroupNames(config)
+reencode({ config })

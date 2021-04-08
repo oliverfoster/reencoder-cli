@@ -89,6 +89,12 @@ This allows for some simple configuration variations.<br>
 
 Objects can be nested.<br>
 
+##### Options
+**_outputGroupNames_** Uses config.default as default to specify which named subtasks should run or run all subtasks<br>
+**_inputDir_** Uses './' as default if unspecified in config<br>
+**_outputDir_** Uses './Converted' as default if unspecified in config<br>
+
+
 ### Execution
 
 With default output:
@@ -107,9 +113,6 @@ const { reencode, getConfig } = require('reencoder-cli')
 const config = getConfig(); // Lookup .reencoderrc.json
 await reencode({
   config, // Config can be specified here, or it will be fetched from .reencoderrc.json through parent directories
-  outputGroupNames, // Uses config.default as default to specify which named subtasks should run
-  inputDir, // Uses './' as default if unspecified in config
-  outputDir, // Uses './reencoder' as default if unspecified in config
   status = (state) => console.log( // Outputs to console: reencode 6.25% 1/3 18.75% nested/one.mp4
     state.mode,
     state.totalPercentComplete,
