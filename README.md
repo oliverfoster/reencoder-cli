@@ -132,7 +132,7 @@ As a library:
 ```js
 const { reencode, getConfig } = require('reencoder-cli')
 const config = getConfig(); // Lookup .reencoderrc.json
-await reencode({
+const promise = reencode({
   config, // Config can be specified here, or it will be fetched from .reencoderrc.json through parent directories
   status = (state) => console.log( // Outputs to console: reencode 6.25% 1/3 18.75% nested/one.mp4
     state.mode,
@@ -142,4 +142,5 @@ await reencode({
     state.currentInputFile
   )
 })
+await promise; // promise.kill() will prematurely terminate the reencoding
 ```

@@ -35,8 +35,8 @@ function execute (program, parameters, process = (stdout, stderr) => {}) {
       ])
     })
   })
-  promise.kill = function() {
-    proc.kill()
+  promise.kill = function () {
+    proc && proc.kill()
   }
   return promise
 };
@@ -173,8 +173,8 @@ const encoding = {
       state.currentInputFile
     )
   } = {}) {
-    let proc;
-    const promise = new Promise((resolve, reject) => {
+    let proc
+    const promise = new Promise(async (resolve, reject) => {
       const inputDir = unixPath(path.resolve(process.cwd(), config.inputDir ?? './'))
       const outputDir = unixPath(path.resolve(process.cwd(), config.outputDir ?? './Converted'))
       const outputGroupNames = config.default ?? ''
@@ -219,7 +219,7 @@ const encoding = {
         }
       })
     })
-    promise.kill = function() {
+    promise.kill = function () {
       proc && proc.kill()
     }
     return promise

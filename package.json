@@ -1,6 +1,6 @@
 {
   "name": "reencoder-cli",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "./app/encoding.js",
   "bin": {
     "reencoder": "./bin/reencoder"
