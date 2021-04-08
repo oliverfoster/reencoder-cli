@@ -21,7 +21,7 @@ Add `.reencoderrc.json` to the execution directory or any of its parents.
   "inputDir": "./",
   "outputDir": "./converted",
   "clearOutputDir": false,
-  "default": "1080",
+  "default": "720",
   "parameters": [
     "-y",
     "-hwaccel", "auto",
@@ -40,13 +40,13 @@ Add `.reencoderrc.json` to the execution directory or any of its parents.
         "-bufsize", "2M",
         "-ac", 2,
         "-ar", 44100,
-        "@@outputDir/@@inputFileDir/@@inputFileNameSanitizedLowerCase.@@outputGroupName.mp4"
+        "@@outputDir/@@inputFileDir/@@inputFileName.@@outputGroupName.mp4"
       ],
       "720": [
         "-vf", "scale=trunc(oh*a/2)*2:720",
         "-b:a", "128k",
         "-crf", 18,
-        "-maxrate", "1M",
+        "-maxrate", "1.2M",
         "-r", 24,
         "-profile:v", "high",
         "-tune", "film",
@@ -55,7 +55,7 @@ Add `.reencoderrc.json` to the execution directory or any of its parents.
         "-bufsize", "2M",
         "-ac", 2,
         "-ar", 44100,
-        "@@outputDir/@@inputFileDir/@@inputFileNameSanitizedLowerCase.@@outputGroupName.mp4"
+        "@@outputDir/@@inputFileDir/@@inputFileName.@@outputGroupName.mp4"
       ],
       "480": [
         "-vf", "scale=trunc(oh*a/2)*2:480",
@@ -70,7 +70,7 @@ Add `.reencoderrc.json` to the execution directory or any of its parents.
         "-bufsize", "2M",
         "-ac", 2,
         "-ar", 44100,
-        "@@outputDir/@@inputFileDir/@@inputFileNameSanitizedLowerCase.@@outputGroupName.mp4"
+        "@@outputDir/@@inputFileDir/@@inputFileName.@@outputGroupName.mp4"
       ]
     }
   ]
