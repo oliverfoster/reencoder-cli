@@ -4,7 +4,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const findUp = require('find-up')
 const sanitize = require('sanitize-filename')
-const sanitizeREGEX = /[._\- ()]*/g
+const sanitizeREGEX = /[._ ]*/g
 
 function getInputFilePath (parameters) {
   const index = parameters.findIndex(item => item === '-i')
