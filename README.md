@@ -107,6 +107,8 @@ Available string replacement variables are declared [here](https://github.com/ol
 
 **_@@inputFile_** : Absolute input file path.<br>
 **_@@inputFileBase_** : Full file name, including extension.<br>
+**_@@inputFileBaseSanitized_** : Full file name, including extension, with special characters and spaces removed.<br>
+**_@@inputFileBaseSanitizedLowerCase_** : Full file name, including extension, with special characters and spaces removed, lowercase.<br>
 **_@@inputFileDir_** : Sub directory relative to `inputDir`.<br>
 **_@@inputFileExt_** : File extension.<br>
 **_@@inputFileName_** : Front part of the file name.<br>

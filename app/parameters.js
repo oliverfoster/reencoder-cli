@@ -96,16 +96,19 @@ async function getFfmpegParameters (inputDir, inputFile, outputDir, config, outp
   outputGroupNames = typeof outputGroupNames === 'string'
     ? outputGroupNames.split(/ |,/g)
     : outputGroupNames
-  const sanitized = sanitize(inputFileParsed.name).replace(sanitizeREGEX, '')
+  const sanitizedName = sanitize(inputFileParsed.name).replace(sanitizeREGEX, '')
+  const sanitizedBase = sanitize(inputFileParsed.base).replace(sanitizeREGEX, '')
   const parameters = reduceParameters(config.parameters, outputGroupNames, {
     inputFile,
     inputFileBase: inputFileParsed.base,
+    inputFileBaseSanitized: sanitizedBase,
+    inputFileBaseSanitizedLowerCase: sanitizedBase.toLowerCase(),
     // Relative to inputDir unless otherwise specified
     inputFileDir: inputFileParsed.dir,
     inputFileExt: inputFileParsed.ext,
     inputFileName: inputFileParsed.name,
-    inputFileNameSanitized: sanitized,
-    inputFileNameSanitizedLowerCase: sanitized.toLowerCase(),
+    inputFileNameSanitized: sanitizedName,
+    inputFileNameSanitizedLowerCase: sanitizedName.toLowerCase(),
     inputFileRoot: inputFileParsed.root,
     outputDir,
     outputGroupName: ''
