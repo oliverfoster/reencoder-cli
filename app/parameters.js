@@ -73,10 +73,10 @@ function getGroupNames (parameters) {
 function getConfig () {
   const filePath = findUp.sync('.reencoderrc.json')
   if (!filePath) {
-    throw new Error('No ".reencoderrc.json" file found. Please check your configuration.');
+    throw new Error('No ".reencoderrc.json" file found. Please check your configuration.')
   }
-  console.log(`Using ${filePath}`);
-  const config = fs.readJsonSync(filePath);
+  console.log(`Using ${filePath}`)
+  const config = fs.readJsonSync(filePath)
   return config
 }
 

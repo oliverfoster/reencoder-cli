@@ -104,11 +104,11 @@ async function getInputFilePaths (config, inputDir, outputDir) {
     return [inputDir, inputFiles]
   }
   // Return inputDir as already pointing to a file
-  const inputDirParsed = path.parse(inputDir);
-  inputDir = inputDirParsed.dir;
+  const inputDirParsed = path.parse(inputDir)
+  inputDir = inputDirParsed.dir
   const inputFiles = [
     inputDirParsed.base
-  ];
+  ]
   return [inputDir, inputFiles]
 }
 
